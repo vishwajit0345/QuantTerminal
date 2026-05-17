@@ -1,6 +1,6 @@
-# QuantPortPro — Bloomberg Terminal Portfolio Optimizer
+# QuantPortPro — Quant Terminal Portfolio Optimizer
 
-A Bloomberg Terminal-grade portfolio optimization system built as a final-year project. Fetches real stock data from Yahoo Finance and runs institutional-quality quant models.
+A bloomberg Terminal-grade portfolio optimization system built as a final-year project. Fetches real stock data from Yahoo Finance and runs institutional-quality quant models.
 
 ## What's inside it
 
