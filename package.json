@@ -1,15 +1,15 @@
 {
   "name": "quantportpro",
   "version": "5.0.0",
-  "description": "Bloomberg Terminal Portfolio Optimization System — OAS-LW, BL, Frank-Wolfe, Walk-Forward, Factor Analysis, Stress Testing",
+  "description": "bloomberg Terminal Portfolio Optimization System — OAS-LW, BL, Frank-Wolfe, Walk-Forward, Factor Analysis, Stress Testing",
   "author": "Vishwajit",
   "private": true,
   "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
-  },
+ "scripts": {
+  "dev": "vite",
+  "build": "npx vite build",
+  "preview": "npx vite preview"
+},
   "dependencies": {
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
