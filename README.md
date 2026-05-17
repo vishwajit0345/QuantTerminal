@@ -1,89 +1,333 @@
-<<<<<<< HEAD
-# QuantPortPro v5.0 — Bloomberg Terminal Portfolio Optimizer
 
-A Bloomberg Terminal-grade portfolio optimization system built as a final-year project. Fetches real stock data from Yahoo Finance and runs institutional-quality quant models.
+> A Bloomberg Terminal-inspired portfolio optimizer built entirely from scratch in React.  
+> Implements institutional-grade quantitative finance algorithms without any third-party finance libraries.
 
-## What's new in v5.0
-=======
-# QuantPortPro — Quant Terminal Portfolio Optimizer
 
-A bloomberg Terminal-grade portfolio optimization system built as a final-year project. Fetches real stock data from Yahoo Finance and runs institutional-quality quant models.
+📁 **GitHub:** [https://github.com/vishwajit0345/QuantTerminal](https://github.com/vishwajit0345/QuantTerminal)
 
-## What's inside it
->>>>>>> 6a95c554b9968a559aedbecd3a48d9457d0f3e80
+---
 
-- **Bloomberg Terminal UI** — Pure black + orange #ff6600 aesthetic, IBM Plex Mono font, scan-line overlay, live market clocks (NY/LON/HKG/MUM), ticker tape, F-key navigation bar
-- **Factor Analysis tab** — Beta, Jensen's Alpha, Treynor Ratio, Information Ratio, Tracking Error, Up/Down Capture, Rolling Beta, Rolling Correlation, Kelly Criterion, Omega Ratio, Gain-to-Pain, Regime detection
-- **Stress Testing tab** — 6 historical scenarios: GFC 2008, COVID 2020, Dot-com 2000, Rate Hike 2022, India Crash 2008, Mild Correction. Per-asset breakdown, monetary impact calculator
-- **Cornish-Fisher CVaR** — Fat-tail adjusted VaR using skewness and excess kurtosis correction
-- **Keyboard shortcuts** — F2–F10 switch tabs, F12 runs optimization
+## What Is This?
 
-## Running it
+Quant Terminal is a web-based portfolio optimization platform that allows users to:
 
-**Windows:** Double-click `run.bat`
+- Select any stock worldwide (NSE, BSE, NYSE, NASDAQ) using live Yahoo Finance data
+- Run 5 different portfolio optimization strategies simultaneously
+- Backtest strategies with zero lookahead bias using walk-forward methodology
+- Analyze risk using institutional metrics like Cornish-Fisher CVaR, VaR, Sortino, Calmar
+- View factor analysis including Jensen's Alpha, Beta, Information Ratio, Kelly Criterion
+- Stress test portfolios against historical crises (GFC 2008, COVID-19, Dot-com 2000)
+- Calculate SIP returns with step-up and Newton-Raphson XIRR
+- Save optimization results persistently using browser IndexedDB
 
-**Mac/Linux:**
-```bash
-bash run.sh
+---
+
+## Live Features (11 Tabs)
+
+| Key | Tab | What It Shows |
+|-----|-----|---------------|
+| F2 | Overview | Equity curves, metrics, return distribution, drawdown chart |
+| F3 | Frontier | Efficient frontier with 4000 Monte Carlo portfolios |
+| F4 | Allocation | Portfolio weights, risk contributions, correlation matrix |
+| F5 | Risk | VaR, CVaR, Cornish-Fisher adjusted tail risk metrics |
+| F6 | Backtest | Walk-forward out-of-sample performance comparison |
+| F7 | Black-Litterman | He-Litterman BL posterior with custom investor views |
+| F8 | Factor Analysis | Beta, Alpha, IR, Treynor, Kelly, Up/Down capture |
+| F9 | Stress Test | P&L impact across 6 historical crisis scenarios |
+| F10 | Compare | Radar chart + full performance table across all strategies |
+| F11 | SIP Calc | SIP calculator with step-up, inflation, XIRR |
+| F12 | Saved Results | IndexedDB persistent storage for all optimization runs |
+
+---
+
+## Optimization Strategies
+
+### 1. Max Sharpe Ratio (Frank-Wolfe QP)
+Maximizes the Sharpe ratio under long-only constraints using the Frank-Wolfe algorithm with correct gradient derivation on the constrained manifold. Unlike gradient descent, Frank-Wolfe handles the simplex constraint naturally without projection.
+
+```
+maximize  (μᵀw − rf) / √(wᵀΣw)
+subject to  Σwᵢ = 1,  wᵢ ≥ 0
 ```
 
-First run installs Node.js dependencies (~30 seconds). Then opens at `http://localhost:5173`.
+### 2. Minimum Variance (Quadratic Programming)
+Finds the portfolio with the lowest possible volatility regardless of expected returns.
 
-## Architecture
+```
+minimize  wᵀΣw
+subject to  Σwᵢ = 1,  wᵢ ≥ 0
+```
+
+### 3. Equal Risk Contribution (Risk Parity)
+Each asset contributes equally to total portfolio risk. Solved iteratively using Newton-Raphson on the risk contribution equations.
+
+```
+RCᵢ = wᵢ × (∂σ/∂wᵢ) = σ/N  for all i
+```
+
+### 4. Black-Litterman Model (He-Litterman 1999)
+Full He-Litterman implementation with CAPM prior, investor views, and Bayesian posterior:
+
+```
+Π = λΣw_mkt                          (CAPM equilibrium)
+M = (τΣ)⁻¹ + PᵀΩ⁻¹P                 (posterior precision)
+μ_BL = M⁻¹[(τΣ)⁻¹Π + PᵀΩ⁻¹Q]       (posterior mean)
+```
+
+Parameters: τ = 0.05, Ω = τPΣPᵀ (uncertainty proportional to prior)
+
+### 5. Equal Weight
+Baseline 1/N portfolio for benchmarking.
+
+---
+
+## Covariance Estimation — OAS Ledoit-Wolf Shrinkage
+
+Standard sample covariance is noisy for high-dimensional portfolios. This project implements the **Oracle Approximating Shrinkage (OAS)** estimator from Chen, Wiesel, Eldar & Hero (2010):
+
+```
+Σ_OAS = (1 − ρ) × S + ρ × μ_S × I
+
+ρ = ((1−2/p) × Tr(S²) + Tr(S)²) / ((n+1−2/p) × (Tr(S²) − Tr(S)²/p))
+```
+
+Where `p` = number of assets, `n` = number of observations, `S` = sample covariance matrix.
+
+This produces a better-conditioned covariance matrix especially when the number of observations is not much larger than the number of assets.
+
+---
+
+## Backtesting — Zero Lookahead Bias
+
+All performance metrics use **walk-forward out-of-sample backtesting**:
+
+```
+Estimation window:  252 trading days (1 year)
+Rebalancing:        Every 21 trading days (monthly)
+Transaction costs:  10 bps per unit of turnover
+Lookahead bias:     Zero — optimization uses only past data
+```
+
+The walk-forward engine strictly separates estimation and evaluation periods. Weights computed on day T use only data from days T-252 to T-1. Performance is evaluated from day T+1 onward.
+
+---
+
+## Risk Metrics
+
+### Value at Risk (VaR)
+Historical simulation VaR at 95% and 99% confidence levels from the walk-forward return series.
+
+### Conditional VaR (CVaR / Expected Shortfall)
+Average loss beyond the VaR threshold — a more complete measure of tail risk.
+
+### Cornish-Fisher Adjusted VaR
+Adjusts VaR for non-normal return distributions using skewness (S) and excess kurtosis (K):
+
+```
+z_CF = z_N + (z²−1)/6 × S + (z³−3z)/24 × K − (2z³−5z)/36 × S²
+```
+
+### Additional Metrics
+- **Sortino Ratio** — return per unit of downside deviation
+- **Calmar Ratio** — CAGR divided by maximum drawdown
+- **Maximum Drawdown** — largest peak-to-trough decline
+
+---
+
+## Factor Analysis
+
+| Metric | Formula | Description |
+|--------|---------|-------------|
+| Beta (β) | Cov(Rp,Rb) / Var(Rb) | Systematic risk vs benchmark |
+| Jensen's Alpha (α) | Rp − [Rf + β(Rb−Rf)] | Excess return above CAPM prediction |
+| Treynor Ratio | (Rp−Rf) / β | Return per unit of systematic risk |
+| Information Ratio | Active Return / Tracking Error | Skill of active management |
+| Up Capture | Portfolio gain / Benchmark gain in up markets | Bull market participation |
+| Down Capture | Portfolio loss / Benchmark loss in down markets | Bear market protection |
+| Kelly Criterion | (μ−Rf) / σ² | Theoretically optimal position size |
+| Omega Ratio | Σ gains / Σ losses | Probability-weighted gain/loss ratio |
+
+---
+
+## SIP Calculator
+
+Implements accurate month-by-month compounding (not simplified annuity formula):
+
+```
+FV = Σᵢ₌₁ⁿ Pᵢ × (1+r)^(n−i)
+
+Pᵢ = P₀ × (1+s)^⌊(i−1)/12⌋     (step-up every 12 months)
+```
+
+**XIRR** uses Newton-Raphson iteration to find the internal rate of return — identical to Excel's XIRR function. Reports the effective annual rate (not nominal).
+
+---
+
+## Data
+
+**Primary:** Yahoo Finance (live data via browser fetch)  
+**Fallback:** Geometric Brownian Motion simulation when Yahoo Finance is unavailable (CORS on deployed environments)
+
+Supports any ticker worldwide including:
+- Indian stocks: `RELIANCE.NS`, `INFY.NS`, `TCS.NS`
+- US stocks: `AAPL`, `MSFT`, `NVDA`
+- ETFs: `SPY`, `QQQ`, `GLD`
+- Bonds: `TLT`, `AGG`
+
+---
+
+## Stress Testing
+
+Portfolio P&L impact estimated across 6 historical crisis scenarios using asset-class shock vectors:
+
+| Scenario | Equity Shock | Bond Shock |
+|----------|-------------|------------|
+| GFC 2008 | −55% | +20% |
+| COVID-19 2020 | −35% | +18% |
+| Dot-com 2000 | −48% | +8% |
+| Rate Hike 2022 | −28% | −35% |
+| India Crash 2008 | −52% | +12% |
+| Mild Correction | −12% | +3% |
+
+---
+
+## Persistence — IndexedDB
+
+Optimization results are saved to the browser's IndexedDB — no server required. Results survive page refresh and browser restart until explicitly deleted by the user.
+
+**What is stored per save:**
+- All 5 strategy weights and walk-forward metrics
+- Downsampled equity curves (100 points per strategy)
+- Asset list, date range, RF rate, transaction cost parameters
+
+**What is not stored** (too large, recomputed on demand):
+- Raw daily returns matrix
+- Full price history
+- Monte Carlo scatter points
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Frontend | React 18, Vite 5 |
+| Charts | Recharts |
+| Styling | CSS Variables + IBM Plex Mono |
+| Data | Yahoo Finance API |
+| Storage | Browser IndexedDB (no backend) |
+| Math | Pure JavaScript (no finance libraries) |
+| Deploy | Vercel |
+
+---
+
+## Project Structure
 
 ```
 src/
-├── constants/bloomberg.js   ← Bloomberg design system (all colors, tokens, constants)
-├── lib/
-│   ├── math.js              ← Linear algebra from scratch (sampCov, matInv, projSimplex)
-│   ├── shrinkage.js         ← OAS Ledoit-Wolf (Chen et al. 2010)
-│   ├── blackLitterman.js    ← Full He-Litterman posterior (1999)
-│   ├── optimization.js      ← Frank-Wolfe Max Sharpe, Min Var, ERC Risk Parity
-│   ├── analytics.js         ← VaR, CVaR, Sortino, Calmar, MDD, rolling metrics
-│   ├── backtest.js          ← Walk-forward backtest (zero look-ahead)
-│   ├── dataFetch.js         ← Yahoo Finance + GBM fallback
-│   └── factors.js           ← NEW: Beta, Alpha, IR, Kelly, Stress Tests, Regimes
+├── App.jsx                    # Main app, routing, sidebar, layout
 ├── components/
-│   └── BloombergShell.jsx   ← NEW: Header, TickerTape, FunctionKeyBar, Panel, Metric
+│   └── TerminalShell.jsx      # Header, ticker tape, function key bar, shared UI
+├── constants/
+│   ├── theme.js               # Color tokens, strategy definitions, asset colors
+│   └── bloomberg.js           # Re-export alias for backward compatibility
 ├── hooks/
-│   └── usePortfolioEngine.js
-├── views/
-│   ├── FactorView.jsx       ← NEW: Factor analysis + regime tab
-│   └── StressView.jsx       ← NEW: Historical stress testing tab
-└── App.jsx                  ← Main Bloomberg Terminal layout
+│   └── usePortfolioEngine.js  # Core optimization engine state management
+├── lib/
+│   ├── optimization.js        # Frank-Wolfe, Min Var, Risk Parity solvers
+│   ├── blackLitterman.js      # He-Litterman BL model (1999)
+│   ├── shrinkage.js           # OAS Ledoit-Wolf covariance estimator
+│   ├── backtest.js            # Walk-forward backtesting engine
+│   ├── analytics.js           # VaR, CVaR, Sortino, Calmar, Cornish-Fisher
+│   ├── factors.js             # Beta, Alpha, Kelly, Omega, stress scenarios
+│   ├── dataFetch.js           # Yahoo Finance data fetching + GBM fallback
+│   ├── math.js                # Matrix operations, Cholesky, projections
+│   └── db.js                  # IndexedDB CRUD operations
+└── views/
+    ├── Overview.jsx            # F2 — equity curves, metrics, distribution
+    ├── tabs.jsx                # F3–F6, F10 — frontier, allocation, risk, backtest, compare
+    ├── FactorView.jsx          # F8 — factor analysis
+    ├── StressView.jsx          # F9 — stress testing
+    ├── SIPView.jsx             # F11 — SIP calculator
+    └── SavedResultsView.jsx    # F12 — IndexedDB results browser
 ```
 
-## Math implemented (all from scratch)
+---
 
-| Module | Algorithm | Reference |
-|---|---|---|
-| `shrinkage.js` | OAS Ledoit-Wolf: ρ = [(1−2/n)tr(S²)+tr(S)²] / [(T+1−2/n)(tr(S²)−tr(S)²/n)] | Chen et al. 2010 |
-| `blackLitterman.js` | Full 9-step BL posterior: M⁻¹[(τΣ)⁻¹Π + P^TΩ⁻¹Q] | He & Litterman 1999 |
-| `optimization.js` | Frank-Wolfe constrained Max Sharpe on probability simplex, O(1/t) | Duchi et al. 2008 |
-| `optimization.js` | ERC Risk Parity: successive approximation of wᵢ·(Σw)ᵢ = constant | Maillard et al. 2010 |
-| `backtest.js` | Walk-forward: EST_WIN=252d, REBAL=21d, zero look-ahead guaranteed | Industry standard |
-| `factors.js` | Cornish-Fisher VaR: z_CF = z_N + (z²−1)/6·S + (z³−3z)/24·K − ... | Cornish-Fisher 1937 |
-| `factors.js` | Kelly Criterion: f* = μ_ex / σ² | Kelly 1956 |
-| `factors.js` | Omega Ratio: Σ(gains above θ) / Σ(losses below θ) | Keating & Shadwick 2002 |
+## How to Run Locally
 
-## Known limitations
+```bash
+# Clone the repository
+git clone https://github.com/vishwajit0345/QuantTerminal.git
 
-- Matrix inversion uses Gaussian elimination (Cholesky would be faster for SPD matrices — TODO)
-- Yahoo Finance via CORS proxy (corsproxy.io) — production would use own backend proxy
-- Frontier curve is approximate — shifts μ rather than solving exact QP per target
-- No tax-aware optimization (STCG/LTCG matters for Indian portfolios)
-- No integer lot-size rounding for actual share counts
-- Portfolio state is in-memory — reloading resets everything
+# Navigate into the project
+cd QuantTerminal
 
-## Ticker format reference
+# Install dependencies
+npm install
 
-| Exchange | Format | Example |
-|---|---|---|
-| US stocks | Ticker | `AAPL`, `MSFT`, `JPM` |
-| NSE India | Add `.NS` | `RELIANCE.NS`, `TCS.NS`, `JSWSTEEL.NS` |
-| BSE India | Add `.BO` | `RELIANCE.BO` |
-| London LSE | Add `.L` | `AZN.L`, `SHEL.L` |
-| Germany | Add `.DE` | `SIE.DE`, `BMW.DE` |
-| Switzerland | Add `.SW` | `NESN.SW` |
-| ETFs | Ticker | `SPY`, `QQQ`, `GLD`, `TLT` |
-| Crypto | Add `-USD` | `BTC-USD`, `ETH-USD` |
+# Start development server
+npm run dev
+
+# Open in browser
+http://localhost:5173
+```
+
+---
+
+## How to Use
+
+1. **Add Stocks** — Type any ticker (AAPL, RELIANCE.NS, etc.) in the sidebar search box and press Enter
+2. **Set Date Range** — Choose start and end dates (default: 5 years)
+3. **Run Optimizer** — Click ⚡ RUN OPTIMIZER or press F12
+4. **Explore Results** — Navigate tabs using F2–F12 or click tab labels
+5. **Save Results** — Click 💾 SAVE RESULT to persist to IndexedDB
+6. **View Saved** — Press F12 to open Saved Results tab
+
+---
+
+## Key Design Decisions
+
+**Why Frank-Wolfe for Max Sharpe?**  
+The textbook formula w* = Σ⁻¹(μ−rf) is only correct without constraints. Under long-only constraints the problem is non-trivial. Frank-Wolfe handles the simplex constraint naturally without requiring projection steps.
+
+**Why OAS over standard Ledoit-Wolf?**  
+Standard Ledoit-Wolf (2004) uses an asymptotic shrinkage intensity that can be suboptimal for small samples. OAS (Chen et al. 2010) solves for the intensity that minimizes expected MSE under the Oracle — giving better conditioning especially for portfolios with fewer observations than assets.
+
+**Why walk-forward over in-sample backtest?**  
+In-sample backtests overfit to historical data and produce inflated performance metrics. Walk-forward strictly uses only past data at each rebalancing point, giving a realistic estimate of out-of-sample performance.
+
+**Why IndexedDB over localStorage?**  
+localStorage has a 5MB limit and only stores strings. IndexedDB supports structured data, async operations, and 250MB+ storage — necessary for storing multiple optimization results with equity curves.
+
+---
+
+## Known Limitations
+
+- Yahoo Finance CORS restriction on deployed environments — falls back to GBM simulation
+- All computation runs client-side (browser) — heavy portfolios may slow on weak devices
+- No tax-aware optimization (pre-tax returns only)
+- No integer lot rounding for Indian markets
+- No market impact model for large position sizes
+- Stress shocks are estimated from historical ranges, not exact tick data
+
+---
+
+## About
+
+Built by **Vishwajit** — Pre-final year BTech CSE student at DSATM Bengaluru (2027).
+
+Interested in quantitative finance, portfolio optimization, and fintech engineering.
+
+📧 Connect on [LinkedIn](https://linkedin.com/in/vishwajit)  
+💻 More projects on [GitHub](https://github.com/vishwajit0345)
+
+---
+
+## References
+
+- He, G. & Litterman, R. (1999). *The Intuition Behind Black-Litterman Model Portfolios*. Goldman Sachs
+- Chen, Y., Wiesel, A., Eldar, Y. & Hero, A. (2010). *Shrinkage Algorithms for MMSE Covariance Estimation*. IEEE
+- Frank, M. & Wolfe, P. (1956). *An Algorithm for Quadratic Programming*. Naval Research Logistics
+- Cornish, E.A. & Fisher, R.A. (1937). *Moments and Cumulants in the Specification of Distributions*. ISI
+- Ledoit, O. & Wolf, M. (2004). *A Well-Conditioned Estimator for Large-Dimensional Covariance Matrices*. Journal of Multivariate Analysis
