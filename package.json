@@ -5,11 +5,11 @@
   "author": "Vishwajit",
   "private": true,
   "type": "module",
- "scripts": {
-  "dev": "vite",
-  "build": "npx vite build",
-  "preview": "npx vite preview"
-},
+  "scripts": {
+    "dev": "vite",
+    "build": "npx vite build",
+    "preview": "npx vite preview"
+  },
   "dependencies": {
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -17,6 +17,6 @@
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.1",
-    "vite": "^5.4.1"
+    "vite": "^5.4.21"
   }
 }
