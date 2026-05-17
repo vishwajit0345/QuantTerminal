@@ -5,11 +5,19 @@
   "author": "Vishwajit",
   "private": true,
   "type": "module",
+<<<<<<< HEAD
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
   },
+=======
+ "scripts": {
+  "dev": "vite",
+  "build": "vite build",
+  "preview": "vite preview"
+},
+>>>>>>> 6a95c554b9968a559aedbecd3a48d9457d0f3e80
   "dependencies": {
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

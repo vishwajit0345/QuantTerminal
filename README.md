@@ -1,8 +1,16 @@
+<<<<<<< HEAD
 # QuantPortPro v5.0 — Bloomberg Terminal Portfolio Optimizer
 
 A Bloomberg Terminal-grade portfolio optimization system built as a final-year project. Fetches real stock data from Yahoo Finance and runs institutional-quality quant models.
 
 ## What's new in v5.0
+=======
+# QuantPortPro — Quant Terminal Portfolio Optimizer
+
+A bloomberg Terminal-grade portfolio optimization system built as a final-year project. Fetches real stock data from Yahoo Finance and runs institutional-quality quant models.
+
+## What's inside it
+>>>>>>> 6a95c554b9968a559aedbecd3a48d9457d0f3e80
 
 - **Bloomberg Terminal UI** — Pure black + orange #ff6600 aesthetic, IBM Plex Mono font, scan-line overlay, live market clocks (NY/LON/HKG/MUM), ticker tape, F-key navigation bar
 - **Factor Analysis tab** — Beta, Jensen's Alpha, Treynor Ratio, Information Ratio, Tracking Error, Up/Down Capture, Rolling Beta, Rolling Correlation, Kelly Criterion, Omega Ratio, Gain-to-Pain, Regime detection
