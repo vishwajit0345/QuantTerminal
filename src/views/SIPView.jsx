@@ -217,11 +217,9 @@ function SliderInput({ label, value, setValue, min, max, step, format, color=B.o
     setFocused(false)
     const parsed = parseFloat(rawText.replace(/[₹,%\s]/g, ''))
     if (!isNaN(parsed)) {
-      const clamped = Math.min(max, Math.max(min, parsed))
-      // Round to nearest step
-      const stepped = Math.round(clamped / step) * step
-      setValue(stepped)
-      setRawText(String(stepped))
+      const clamped = Math.max(min, parsed)
+      setValue(clamped)
+      setRawText(String(clamped))
     } else {
       setRawText(String(value)) // revert on invalid
     }
