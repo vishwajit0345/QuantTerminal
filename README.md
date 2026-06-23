@@ -217,7 +217,7 @@ Optimization results are saved to the browser's IndexedDB — no server required
 | Data | Yahoo Finance API |
 | Storage | Browser IndexedDB (no backend) |
 | Math | Pure JavaScript (no finance libraries) |
-| Deploy | Vercel |
+
 
 ---
 
@@ -319,7 +319,7 @@ Built by **Vishwajit** — Pre-final year BTech CSE student at DSATM Bengaluru (
 
 Interested in quantitative finance, portfolio optimization, and fintech engineering.
 
-📧 Connect on [LinkedIn](https://linkedin.com/in/vishwajit)  
+📧 Connect on [LinkedIn](https://www.linkedin.com/in/vishwajit-kumar-a32b51291)  
 💻 More projects on [GitHub](https://github.com/vishwajit0345)
 
 ---
