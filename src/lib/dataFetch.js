@@ -1,13 +1,14 @@
 /*
   dataFetch.js — Yahoo Finance price fetching + GBM simulation fallback
 
-  Yahoo Finance doesn't allow direct browser requests (CORS).
-  We route through corsproxy.io — it's free, good enough for a project.
-  In production you'd run your own backend proxy.
+  Request order:
+    1. Our own proxy at /api/yahoo
+       (Vite dev proxy locally, Vercel serverless function in production)
+    2. corsproxy.io as a backup
 
   If Yahoo fails (rate limit, delisted ticker, bad symbol),
-  we generate synthetic prices using Geometric Brownian Motion
-  from the known params in GBM. The app labels this clearly.
+  makeSynthPrices() generates synthetic prices using Geometric Brownian Motion.
+  The app labels this clearly.
 */
 
 import { bm } from './math.js'
@@ -15,8 +16,24 @@ import { GBM as GBM_PARAMS } from '../constants/theme.js'
 
 const CORS_PROXY = 'https://corsproxy.io/?'
 
+async function fetchJson(ownUrl, yahooUrl, timeoutMs) {
+  // 1) Own proxy
+  try {
+    const res = await fetch(ownUrl, { signal: AbortSignal.timeout(timeoutMs) })
+    if (res.ok) return await res.json()
+  } catch {
+    // fall through to backup
+  }
+  // 2) Backup proxy
+  const res = await fetch(CORS_PROXY + encodeURIComponent(yahooUrl), {
+    signal: AbortSignal.timeout(timeoutMs),
+  })
+  if (!res.ok) throw new Error(`HTTP ${res.status}`)
+  return await res.json()
+}
+
 /*
-  Fetch closing prices from Yahoo Finance for a date range.
+  Fetch closing prices for a date range.
   startDate, endDate: 'YYYY-MM-DD' strings
   Returns: array of closing prices (numbers)
 */
@@ -24,13 +41,10 @@ export async function fetchPrices(ticker, startDate, endDate) {
   const p1 = Math.floor(new Date(startDate).getTime() / 1000)
   const p2 = Math.floor(new Date(endDate).getTime() / 1000)
 
-  const yUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&period1=${p1}&period2=${p2}&includePrePost=false`
-  const url = CORS_PROXY + encodeURIComponent(yUrl)
+  const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&period1=${p1}&period2=${p2}&includePrePost=false`
+  const ownUrl = `/api/yahoo?ticker=${encodeURIComponent(ticker)}&start=${p1}&end=${p2}`
 
-  const res = await fetch(url, { signal: AbortSignal.timeout(10000) })
-  if (!res.ok) throw new Error(`HTTP ${res.status}`)
-
-  const json = await res.json()
+  const json = await fetchJson(ownUrl, yahooUrl, 10000)
   const result = json.chart?.result?.[0]
   if (!result) throw new Error('No data returned from Yahoo Finance')
 
@@ -40,22 +54,18 @@ export async function fetchPrices(ticker, startDate, endDate) {
   if (valid.length < 30) {
     throw new Error(`Only ${valid.length} data points — try a wider date range`)
   }
-
   return valid
 }
 
 /*
-  Validate a ticker symbol by trying to fetch recent data.
+  Validate a ticker by fetching 5 days of data.
   Returns { name, exchange, currency, type } on success.
 */
 export async function validateTicker(ticker) {
-  const yUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=5d`
-  const url = CORS_PROXY + encodeURIComponent(yUrl)
+  const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=5d`
+  const ownUrl = `/api/yahoo?ticker=${encodeURIComponent(ticker)}&type=validate`
 
-  const res = await fetch(url, { signal: AbortSignal.timeout(7000) })
-  if (!res.ok) throw new Error(`Ticker not found (HTTP ${res.status})`)
-
-  const json = await res.json()
+  const json = await fetchJson(ownUrl, yahooUrl, 8000)
   const result = json.chart?.result?.[0]
   if (!result) throw new Error('Ticker not found on Yahoo Finance')
 
@@ -70,7 +80,6 @@ export async function validateTicker(ticker) {
 
 /*
   GBM simulation — used when Yahoo Finance is unavailable.
-  Generates realistic synthetic prices for fallback.
 
   dS = μ·S·dt + σ·S·dW   (Ito process)
   ln(S_t) = ln(S_0) + (μ - σ²/2)·t + σ·√t·Z,  Z~N(0,1)
