@@ -1,10 +1,10 @@
 @echo off
-title QuantPortPro v5.0 Bloomberg Terminal
+title Quant Terminal
 color 06
 
 echo.
 echo  ==========================================
-echo   BLOOMBERG  QUANTPORTPRO TERMINAL v5.0
+echo   Quant terminal
 echo   Portfolio Optimization System
 echo  ==========================================
 echo.
@@ -29,7 +29,7 @@ if not exist "node_modules\" (
 )
 echo [OK] Dependencies ready
 echo.
-echo  Starting Bloomberg Terminal...
+echo  Starting Quant Terminal...
 echo  Open browser at: http://localhost:5173
 echo  Press Ctrl+C to stop
 echo.

@@ -1,6 +1,5 @@
 {
-  "name": "quantportpro",
-  "version": "5.0.0",
+  "name": "quant terminal",
   "description": "Quant Terminal Portfolio Optimization System",
   "author": "Vishwajit",
   "private": true,

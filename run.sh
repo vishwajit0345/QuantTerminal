@@ -1,6 +1,6 @@
 #!/bin/bash
 echo ""
-echo "  BLOOMBERG  QUANTPORTPRO TERMINAL v5.0"
+echo "  Quant Terminal"
 echo "  Portfolio Optimization System"
 echo ""
 
