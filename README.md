@@ -2,7 +2,7 @@
 
 A Bloomberg Terminal-inspired portfolio optimizer built in React. The quantitative finance algorithms (covariance shrinkage, Black-Litterman, Frank-Wolfe, risk parity, walk-forward backtesting, risk and factor analytics) are implemented in plain JavaScript, with no third-party finance libraries.
 
-**Live demo:** https://quant-terminal-i5iz.vercel.app/
+**Live demo:** https://quant-terminal-sjh.vercel.app/
 
 <!-- Add screenshots to docs/screenshots/ and uncomment:
 ![Overview](docs/screenshots/overview.png)
