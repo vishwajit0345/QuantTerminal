@@ -259,4 +259,3 @@ Built by **Vishwajit**, a final-year B.E. Information Science & Engineering stud
 - Frank, M. & Wolfe, P. (1956). *An Algorithm for Quadratic Programming*. Naval Research Logistics Quarterly
 - Cornish, E.A. & Fisher, R.A. (1937). *Moments and Cumulants in the Specification of Distributions*. Revue de l'Institut International de Statistique
 - Ledoit, O. & Wolf, M. (2004). *A Well-Conditioned Estimator for Large-Dimensional Covariance Matrices*. Journal of Multivariate Analysis
--
