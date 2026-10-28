@@ -1,8 +1,6 @@
 /*
   optimization.js — portfolio weight solvers
-
   Three strategies + the Frank-Wolfe engine for constrained max Sharpe.
-
   Key insight: the textbook formula w* = Σ^{-1}(μ - rf) is WRONG under
   long-only constraints. Zeroing out negative weights and renormalising
   does NOT maximise Sharpe on the simplex — it just makes the portfolio feasible.
@@ -14,16 +12,13 @@ import { TD } from '../constants/theme.js'
 
 /*
   Max Sharpe via Frank-Wolfe conditional gradient method.
-
   Problem: max SR(w) = (w^T μ_ex) / √(w^T Σ w)   s.t. w ∈ Δ^{n-1}
-
   Algorithm (one iteration):
     g = gradient of SR at current w
     s = e_k where k = argmax(g)   ← linear oracle over simplex
     d = s - w                     ← descent direction
     w ← projSimplex(w + α_t * d)  where α_t = 2/(t+2)
-
-  Convergence: O(1/t) to global max on the simplex.
+    Convergence: O(1/t) to global max on the simplex.
   iters=2500 is plenty for n ≤ 15 assets.
 */
 export function maxSharpeQP(muD, cov, rf, iters = 2500) {
@@ -89,15 +84,11 @@ export function minVarW(cov) {
 
 /*
   Risk Parity / Equal Risk Contribution (ERC).
-
   Reference: Maillard, Roncalli, Teïletche (2010)
-
   Target: w_i * (Σw)_i / √(w^T Σ w) = constant for all i
   i.e. every asset contributes equally to total portfolio variance.
-
   Algorithm: successive approximation — converges reliably.
   w_i ← w_i * sqrt(target / RC_i)  then renormalise
-
   Not convex, but this fixed-point iteration always converges in practice.
 */
 export function riskParityW(cov, iters = 800) {

@@ -32,8 +32,7 @@ export const matMul = (A, B) =>
 /*
   Sample covariance matrix
   Σ_ij = (1/T-1) * Σ_t (r_it - μ_i)(r_jt - μ_j)
-
-  RM: n×T matrix of returns (n assets, T time steps)
+ RM: n×T matrix of returns (n assets, T time steps)
 */
 export function sampCov(RM) {
   const n = RM.length
@@ -95,8 +94,7 @@ export function matInv(M, reg = 1e-9) {
 /*
   Project vector v onto the probability simplex:
   { w : w >= 0, sum(w) = 1 }
-
-  Algorithm: Duchi et al. (2008) — O(n log n)
+ Algorithm: Duchi et al. (2008) — O(n log n)
   Used inside Frank-Wolfe to enforce the long-only constraint.
 */
 export function projSimplex(v) {

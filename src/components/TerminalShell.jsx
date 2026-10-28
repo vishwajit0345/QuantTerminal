@@ -1,13 +1,10 @@
 /*
-  TerminalShell.jsx — Quant Terminal frame (replaces BloombergShell)
-
+  TerminalShell.jsx — Quant Terminal frame
   Provides:
-  - QuantHeader   — orange top bar, logo, DST-safe city clocks, market status
-  - TickerTape    — selected portfolio stocks scrolling with annual returns
+  - QuantHeader — orange top bar, logo, DST-safe city clocks, market status
+  - TickerTape — selected portfolio stocks scrolling with annual returns
   - FunctionKeyBar — bottom F2–F12 navigation
   - Panel, Metric, SectionHead, BBTooltip, DataGrid — shared UI components
-
-  Zero Bloomberg branding. Zero version numbers.
 */
 
 import { useState, useEffect } from 'react'

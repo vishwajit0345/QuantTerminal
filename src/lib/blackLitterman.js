@@ -1,16 +1,12 @@
 /*
   blackLitterman.js — full He-Litterman BL posterior
-
-  Reference: Black & Litterman (1992), He & Litterman (1999)
+ Reference: Black & Litterman (1992), He & Litterman (1999)
   "The Intuition Behind Black-Litterman Model Portfolios"
-
   The idea: plain Markowitz uses historical μ directly as expected returns.
   Historical means are noisy — they cause extreme, unstable weights.
-
   BL instead starts from CAPM equilibrium returns (Π) as a Bayesian prior,
   then updates toward analyst views. The blend is controlled by τ (how much
   to trust the prior) and Ω (view uncertainty).
-
   Full 9-step posterior:
     1. Π = λ·Σ·w_mkt                 (CAPM equilibrium)
     2. Ω = τ·P·Σ·P^T                 (He-Litterman proportional uncertainty)

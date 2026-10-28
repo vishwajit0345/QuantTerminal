@@ -1,7 +1,6 @@
 /*
   SavedResultsView.jsx — Persistent Results Database (IndexedDB)
-
-  Shows all previously saved optimization runs stored in IndexedDB.
+Shows all previously saved optimization runs stored in IndexedDB.
   Results survive page refresh and browser restart.
   User can:
     - View all saved runs in a table

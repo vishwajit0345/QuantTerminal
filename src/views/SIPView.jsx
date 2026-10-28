@@ -1,6 +1,5 @@
 /*
   SIPView.jsx — SIP Calculator
-
   Systematic Investment Plan calculator with:
     - Regular SIP + Step-Up SIP (annual increment)
     - Inflation-adjusted real corpus
@@ -8,8 +7,7 @@
     - Year-by-year wealth breakdown
     - Accurate month-by-month compounding
     - Quant Terminal aesthetic throughout
-
-  Math:
+    Math:
     Regular SIP:  FV = Σ P × (1+r)^(n-i)   for i = 1..n
     Step-Up SIP:  P_i = P₀ × (1+s)^⌊(i-1)/12⌋
     Lump Sum:     FV = L × (1+R)^Y

@@ -1,8 +1,6 @@
 /*
   theme.js — Quant Terminal design system
   Every color, spacing, font token in one place.
-  
-  Inspired by the actual Bloomberg Terminal aesthetic:
   pure black, orange primaries, terminal monospace, dense data.
 */
 
@@ -17,7 +15,6 @@ export const B = {
   border2: '#2a2a2a',   // stronger borders
   divider: '#333333',   // dividers
 
-  // Bloomberg signature orange family
   orange:  '#ff6600',   // primary — Bloomberg orange
   orange2: '#ff8c00',   // lighter orange
   orangeDim:'#cc5200',  // dimmed orange

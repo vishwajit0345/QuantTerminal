@@ -1,16 +1,12 @@
 /*
   shrinkage.js — OAS Ledoit-Wolf covariance estimator
-
   Reference: Chen, Wiesel, Eldar, Hero (2010)
   "Shrinkage Algorithms for MMSE Covariance Estimation"
-
   The problem: sample covariance has estimation error of order N/T.
   With 15 assets and 252 days that's a ~6% noise ratio — enough to
   blow up the optimiser with extreme weights.
-
   OAS shrinks S toward a scaled identity: Σ_hat = (1-ρ)S + ρ*(tr(S)/n)*I
   The key: ρ is derived analytically from the data, not chosen manually.
-
   ρ_OAS = [(1 - 2/n)*tr(S²) + tr(S)²] / [(T+1 - 2/n)*(tr(S²) - tr(S)²/n)]
 */
 

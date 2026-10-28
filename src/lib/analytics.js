@@ -1,6 +1,5 @@
 /*
   analytics.js — portfolio performance and risk metrics
-
   All the standard quant metrics in one place.
   These are straightforward once you know the formulas —
   the tricky part is making sure you use the right return series
@@ -42,7 +41,6 @@ export function riskContrib(w, cov) {
 /*
   Historical simulation VaR and CVaR.
   rets: array of daily log returns
-
   VaR_α: the loss not exceeded on (1-α)% of days
   CVaR_α (Expected Shortfall): average loss on the worst α% of days
 */

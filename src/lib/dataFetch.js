@@ -1,12 +1,11 @@
 /*
   dataFetch.js — Yahoo Finance price fetching + GBM simulation fallback
 
-  Request order:
+Request order:
     1. Our own proxy at /api/yahoo
        (Vite dev proxy locally, Vercel serverless function in production)
     2. corsproxy.io as a backup
-
-  If Yahoo fails (rate limit, delisted ticker, bad symbol),
+If Yahoo fails (rate limit, delisted ticker, bad symbol),
   makeSynthPrices() generates synthetic prices using Geometric Brownian Motion.
   The app labels this clearly.
 */
@@ -80,7 +79,6 @@ export async function validateTicker(ticker) {
 
 /*
   GBM simulation — used when Yahoo Finance is unavailable.
-
   dS = μ·S·dt + σ·S·dW   (Ito process)
   ln(S_t) = ln(S_0) + (μ - σ²/2)·t + σ·√t·Z,  Z~N(0,1)
 */

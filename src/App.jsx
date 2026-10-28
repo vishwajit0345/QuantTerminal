@@ -1,6 +1,5 @@
 /*
   App.jsx — Quant Terminal Portfolio Optimizer
-
   Features:
   - Orange top bar + live market clocks (MUM · NY · LON · TKY)
   - Ticker tape: your selected stocks + annual returns

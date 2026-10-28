@@ -1,7 +1,6 @@
 /*
   views/Overview.jsx — the main dashboard tab
-
-  Shows walk-forward performance metrics and equity curves.
+Shows walk-forward performance metrics and equity curves.
   If walk-forward isn't available (date range too short),
   falls back to in-sample numbers with a clear warning.
 */

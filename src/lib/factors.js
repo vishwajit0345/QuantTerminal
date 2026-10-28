@@ -1,7 +1,7 @@
 /*
   factors.js — advanced quant analytics
 
-  NEW in v5 (Bloomberg upgrade):
+  New in this version:
     - Jensen's Alpha & Beta vs benchmark
     - Information Ratio & Tracking Error
     - Treynor Ratio
@@ -14,8 +14,7 @@
     - Conditional Drawdown at Risk (CDaR)
     - Omega Ratio
     - Gain-to-Pain Ratio
-
-  All implemented from scratch — no external finance libraries.
+    All implemented from scratch — no external finance libraries.
 */
 
 import { vmean, dot, logRet } from './math.js'

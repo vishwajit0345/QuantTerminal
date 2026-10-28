@@ -1,11 +1,9 @@
 /*
   backtest.js — walk-forward backtesting engine
-
   This is the most important correctness feature of the project.
   A backtest that uses future data to estimate weights is called "in-sample"
   or has "look-ahead bias" — the results are completely fake.
-
-  Walk-forward = no look-ahead, guaranteed:
+   Walk-forward = no look-ahead, guaranteed:
     At rebalance date t:
       - ESTIMATE: use rets[max(0, t-EST_WIN) : t]   ← only past data
       - EVALUATE: apply weights to rets[t : t+REBAL] ← only future data

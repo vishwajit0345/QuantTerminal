@@ -1,10 +1,8 @@
 /*
   db.js — IndexedDB persistence layer for Quant Terminal
-
   Stores optimized portfolio results so they survive page refresh
   and browser restart. Results are kept until the user explicitly
   deletes them — no automatic expiry.
-
   Schema (object store: "results"):
     id         — auto-increment primary key
     savedAt    — ISO timestamp string
@@ -15,8 +13,7 @@
     params     — { rf, txBps, rho, yrs, canWF }
     strategies — per-strategy metrics + weights (all 5 strategies)
     equityCurves — downsampled walk-forward equity curves (100 pts)
-
-  We intentionally DO NOT store:
+    We intentionally DO NOT store:
     - rets matrix (huge — up to 15×1260 floats)
     - prices matrix (similar size)
     - mc array (5000 scatter points)
@@ -50,8 +47,7 @@ function openDB() {
   Takes the full engine object and strips out the heavy arrays
   (rets, prices, mc) keeping only the computed results we need
   to display in the Saved Results tab.
-
-  Equity curves are downsampled to 100 points for storage efficiency
+   Equity curves are downsampled to 100 points for storage efficiency
   (~10KB per curve vs ~10MB for the full 1260-point series).
 */
 export function serializeEngine(engine, label = '') {

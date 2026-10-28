@@ -1,6 +1,5 @@
 /*
-  FactorView.jsx — Factor Analysis tab (NEW in v5)
-
+  FactorView.jsx — Factor Analysis tab
   Displays:
     - Beta, Alpha, Treynor, Information Ratio, Tracking Error
     - Up/Down Capture Ratios
